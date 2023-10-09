@@ -459,3 +459,161 @@ fragment TeacherBookmark_teacher on Teacher {
   isSaved
 }
 '''
+GET_SCHOOL_DETAIL = '''query SchoolRatingsPageQuery(
+  $id: ID!
+) {
+  school: node(id: $id) {
+    __typename
+    ... on School {
+      id
+      legacyId
+      name
+      city
+      state
+      country
+      numRatings
+      ...StickyHeader_school
+      ...OverallRating_school
+      ...SchoolSummary_school
+      ...SchoolRatingsContainer_school
+    }
+    id
+  }
+}
+
+fragment StickyHeader_school on School {
+  ...HeaderDescription_school
+  ...HeaderRateButton_school
+}
+
+fragment OverallRating_school on School {
+  avgRatingRounded
+  avgRating
+  numRatings
+}
+
+fragment SchoolSummary_school on School {
+  summary {
+    schoolReputation
+    schoolSatisfaction
+    internetSpeed
+    campusCondition
+    schoolSafety
+    careerOpportunities
+    socialActivities
+    foodQuality
+    clubAndEventActivities
+    campusLocation
+  }
+}
+
+fragment SchoolRatingsContainer_school on School {
+  numRatings
+  ...SchoolRatingsList_school
+}
+
+fragment SchoolRatingsList_school on School {
+  id
+  name
+  city
+  state
+  country
+  legacyId
+  ratings(first: 20) {
+    edges {
+      cursor
+      node {
+        ...SchoolRating_rating
+        id
+        __typename
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+  }
+  ...SchoolRating_school
+}
+
+fragment SchoolRating_rating on SchoolRating {
+  clubsRating
+  comment
+  date
+  facilitiesRating
+  foodRating
+  happinessRating
+  internetRating
+  locationRating
+  opportunitiesRating
+  reputationRating
+  safetyRating
+  socialRating
+  legacyId
+  flagStatus
+  createdByUser
+  ...SchoolRatingFooter_rating
+}
+
+fragment SchoolRating_school on School {
+  ...SchoolRatingSuperHeader_school
+  ...SchoolRatingFooter_school
+}
+
+fragment SchoolRatingSuperHeader_school on School {
+  name
+  legacyId
+}
+
+fragment SchoolRatingFooter_school on School {
+  id
+  legacyId
+  ...Thumbs_school
+}
+
+fragment Thumbs_school on School {
+  id
+  legacyId
+}
+
+fragment SchoolRatingFooter_rating on SchoolRating {
+  id
+  comment
+  flagStatus
+  legacyId
+  ...Thumbs_schoolRating
+}
+
+fragment Thumbs_schoolRating on SchoolRating {
+  id
+  legacyId
+  thumbsDownTotal
+  thumbsUpTotal
+  userThumbs {
+    computerId
+    thumbsUp
+    thumbsDown
+    id
+  }
+}
+
+fragment HeaderDescription_school on School {
+  name
+  city
+  state
+  legacyId
+}
+
+fragment HeaderRateButton_school on School {
+  ...RateSchoolLink_school
+  ...CompareSchoolLink_school
+}
+
+fragment RateSchoolLink_school on School {
+  legacyId
+}
+
+fragment CompareSchoolLink_school on School {
+  legacyId
+}
+'''
