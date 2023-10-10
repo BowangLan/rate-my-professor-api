@@ -10,11 +10,15 @@ console = Console()
 
 def build_table_from_res(res):
     items = [c['node'] for c in res]
-    table = Table(Column('ID', style="cyan"), Column('Name', style="bright_magenta"),
-                  Column('Rating', style="bright_green"), Column('School', style="bright_blue"))
+    table = Table(Column('ID', style="cyan"),
+                  Column('Rating', style="bright_green"),
+                  Column('Location', style="bright_blue"),
+                  Column('Name', style="bright_magenta"))
     for item in items:
-        table.add_row(item['id'], item['firstName'] + " " +
-                      item['lastName'], str(item['avgRating']), item['school']['name'])
+        table.add_row(item['id'],
+                      f"{item['avgRating']:.2f}",
+                      f"""{item['city']}, {item['state']}""",
+                      item['name'])
     return table
 
 
@@ -26,6 +30,6 @@ if __name__ == '__main__':
         sys.exit(1)
     query = sys.argv[1]
     client = RateMyProfessorClient(cookies=cookies)
-    t = client.search_professors(query)
+    t = client.search_schools(query)
     print("Total results:", len(t))
     print(build_table_from_res(t))

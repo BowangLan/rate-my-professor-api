@@ -1,5 +1,6 @@
 import sys
 from rich import print
+from rich.console import Console
 from rateMyProfessor.client import RateMyProfessorClient
 
 

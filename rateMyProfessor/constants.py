@@ -383,7 +383,78 @@ fragment TeacherTitles_teacher on Teacher {
   }
 }
 '''
-SEARCH_PROFESSOR = '''query TeacherSearchResultsPageQuery(
+SEARCH_PROFESSOR = '''query TeacherSearchPaginationQuery(
+  $count: Int!
+  $cursor: String
+  $query: TeacherSearchQuery!
+) {
+  search: newSearch {
+    ...TeacherSearchPagination_search_1jWD3d
+  }
+}
+
+fragment TeacherSearchPagination_search_1jWD3d on newSearch {
+  teachers(query: $query, first: $count, after: $cursor) {
+    didFallback
+    edges {
+      cursor
+      node {
+        ...TeacherCard_teacher
+        id
+        __typename
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    resultCount
+    filters {
+      field
+      options {
+        value
+        id
+      }
+    }
+  }
+}
+
+fragment TeacherCard_teacher on Teacher {
+  id
+  legacyId
+  avgRating
+  numRatings
+  ...CardFeedback_teacher
+  ...CardSchool_teacher
+  ...CardName_teacher
+  ...TeacherBookmark_teacher
+}
+
+fragment CardFeedback_teacher on Teacher {
+  wouldTakeAgainPercent
+  avgDifficulty
+}
+
+fragment CardSchool_teacher on Teacher {
+  department
+  school {
+    name
+    id
+  }
+}
+
+fragment CardName_teacher on Teacher {
+  firstName
+  lastName
+}
+
+fragment TeacherBookmark_teacher on Teacher {
+  id
+  isSaved
+}
+'''
+
+'''query TeacherSearchResultsPageQuery(
   $query: TeacherSearchQuery!
   $schoolID: ID
 ) {
@@ -615,5 +686,54 @@ fragment RateSchoolLink_school on School {
 
 fragment CompareSchoolLink_school on School {
   legacyId
+}
+'''
+
+SEARCH_SCHOOL = '''query SchoolSearchPaginationQuery(
+  $count: Int!
+  $cursor: String
+  $query: SchoolSearchQuery!
+) {
+  search: newSearch {
+    ...SchoolSearchPagination_search_1jWD3d
+  }
+}
+
+fragment SchoolSearchPagination_search_1jWD3d on newSearch {
+  schools(query: $query, first: $count, after: $cursor) {
+    edges {
+      cursor
+      node {
+        name
+        ...SchoolCard_school
+        id
+        __typename
+      }
+    }
+    pageInfo {
+      hasNextPage
+      endCursor
+    }
+    resultCount
+  }
+}
+
+fragment SchoolCard_school on School {
+  legacyId
+  name
+  numRatings
+  avgRating
+  avgRatingRounded
+  ...SchoolCardHeader_school
+  ...SchoolCardLocation_school
+}
+
+fragment SchoolCardHeader_school on School {
+  name
+}
+
+fragment SchoolCardLocation_school on School {
+  city
+  state
 }
 '''
