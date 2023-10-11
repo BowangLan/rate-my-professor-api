@@ -40,7 +40,7 @@ class RateMyProfessorClient():
         return {
             **headers,
             "Authorization": "Basic " + self.token,
-            "Cookie": self.cookies,
+            # "Cookie": self.cookies,
         }
 
     def graphql(self, query: str, variables: dict):
@@ -99,20 +99,18 @@ class RateMyProfessorClient():
                 time.sleep(sleep)
             return data
 
-            # if len(data) >= count:
-            #     return data
-
     def get_professor_detail(self, professor_id: str):
-        url = f"{DOMAIN}/professor/" + professor_id
-        res = requests.get(url, headers=self.headers_with_auth)
-        parser = ProfessorDetailPageParser()
-        data = parser.parseHtml(res.text)
-        return data
+        # url = f"{DOMAIN}/professor/" + professor_id
+        # res = requests.get(url, headers=self.headers_with_auth)
+        # parser = ProfessorDetailPageParser()
+        # data = parser.parseHtml(res.text)
+        # return data
+        return self.graphql(GET_PROFESSOR_DETAIL, {'id': professor_id})
 
     def search_schools(self, query_text: str, fetchAll: bool = True):
-        pageSize = 100
+        pageSize = 500
         sleep = 1
-        maxPages = 10
+        maxPages = 10 # default to fetching 10 pages at most
         query = {
             'text': query_text,
         }
@@ -124,7 +122,7 @@ class RateMyProfessorClient():
         count = res['data']['search']['schools']['resultCount']
         data = res['data']['search']['schools']['edges']
         if not fetchAll:
-            return self.graphql(SEARCH_SCHOOL, init_variables)
+            return data
         c = 2
         totalPages = count // pageSize + 1
         print(f"Total pages: {totalPages}")

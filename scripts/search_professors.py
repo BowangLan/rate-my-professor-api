@@ -13,7 +13,7 @@ def build_table_from_res(res):
     table = Table(Column('ID', style="cyan"), Column('Name', style="bright_magenta"),
                   Column('Rating', style="bright_green"), Column('School', style="bright_blue"))
     for item in items:
-        table.add_row(item['id'], item['firstName'] + " " +
+        table.add_row(f"{item['id']}", item['firstName'] + " " +
                       item['lastName'], str(item['avgRating']), item['school']['name'])
     return table
 
@@ -22,10 +22,14 @@ cookies = '_ga_WET17VWCJ3=GS1.1.1696866898.1.0.1696866898.0.0.0; _ga=GA1.1.10598
 
 if __name__ == '__main__':
     if len(sys.argv) == 1:
-        print("Usage: python -m scripts.search_professors <query>")
+        print("Usage: python -m scripts.search_professors <query> <school_id?>")
         sys.exit(1)
     query = sys.argv[1]
+    if len(sys.argv) > 2:
+        school_id = sys.argv[2]
+    else:
+        school_id = ""
     client = RateMyProfessorClient(cookies=cookies)
-    t = client.search_professors(query)
+    t = client.search_professors(query, school_id)
     print("Total results:", len(t))
     print(build_table_from_res(t))
